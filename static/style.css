@@ -1,0 +1,79 @@
+body{
+
+}
+
+.chessboard {
+    width: 640px;
+    height: 640px;
+    margin: 20px;
+    border: 25px solid #333;
+    display: grid;
+}
+.black {
+    float: left;
+    width: 80px;
+    height: 80px;
+    background-color: #999;
+    font-size:75px;
+    text-align:center;
+    display: table-cell;
+    vertical-align:middle;
+}
+.white {
+    float: left;
+    width: 80px;
+    height: 80px;
+    background-color: #fff;
+    font-size:75px;
+    text-align:center;
+    display: table-cell;
+    vertical-align:middle;
+
+.fileLabel{
+    float: left;
+    width: 80px;
+    height: 80px;
+    background-color: #aab;
+    font-size:20px;
+    text-align:center;
+    display: table-cell;
+    vertical-align:middle;
+}
+
+.rankLabel{
+    float: left;
+    width: 80px;
+    height: 80px;
+    background-color: #aab;
+    font-size:20px;
+    text-align:center;
+    display: table-cell;
+    vertical-align:middle;
+}
+.cornerLabel{
+    float: left;
+    width: 80px;
+    height: 80px;
+    background-color: #aab;
+    font-size:20px;
+    text-align:center;
+    display: table-cell;
+    vertical-align:middle;
+}
+
+.currentTurnText{
+    font-size: 2em;
+
+}
+
+.curTurnTeam{
+    font-size: 2em;
+    font-weight: bold;
+}
+
+.selectedPieceText{
+    font-size: 2em;
+}
+.selectedPiece{
+    font-size:75px;
+}
