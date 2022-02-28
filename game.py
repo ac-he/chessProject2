@@ -1,12 +1,5 @@
+import move
 import pieces
-
-
-def print_board_chars(input_board):
-    for rank in range(10):
-        for file in range(10):
-            print(input_board[rank][file]["piece"]["label"], end="")
-        print()
-    return
 
 
 def create_board():
@@ -17,11 +10,12 @@ def create_board():
         for j in range(cols):
             col.append(pieces.make_tile(i, j))
         board.append(col)
-    # print_board_chars(board)
+
     return board
 
 
 Board = create_board()
+
 
 def get_opposite_color(string):
     return_color = " "
@@ -29,19 +23,80 @@ def get_opposite_color(string):
         return_color = "black"
     elif string == "black":
         return_color = "white"
-
     return return_color
 
 
-def switch_turns(cur_turn):
-    cur_turn = get_opposite_color(cur_turn)
-    return cur_turn
+def switch_turns():
+    global turn
+    turn = get_opposite_color(turn)
+    return turn
 
 
-def get_cur_turn(cur_turn):
-    return cur_turn
+def get_game_board():
+    for r in Board:
+        for f in r:
+            print(f["coord"], end="")
+            if f["tile class"] == "whiteSelected" or f["tile class"] == "blackSelected":
+                print("s", end="")
+            print(f["piece"]["label"], end=" ")
+        print()
+    return Board
+
+
+def get_tile_formatted_text(tile):
+    name = str(tile.get("piece").get("label"))
+    ret_str = str(tile.get("coord"))
+    if name != "_":
+        ret_str = name + " at " + ret_str
+    return ret_str
+
+
+turn = ""
+
+
+def create_turn():
+    global turn
+    turn = "white"
+    return turn
+
+
+def get_cur_turn():
+    return turn
+
+
+def clear_click():
+    return {"tile class": "none", "coord": "none"}
+
+
+move_to = clear_click()
+move_from = clear_click()
+
 
 def react_to(rank, file):
-    clicked_piece = Board[2][2].get("piece")
-    ret_str = "Moving " + clicked_piece.get("name") + " to " + rank + "," + file
+    global move_to, move_from
+    clicked_tile = Board[rank][file]
+    ret_str = ""
+
+    if move_from == clicked_tile:
+        move_from = clear_click()
+        ret_str = "move cleared"
+    elif move_from.get("tile class") == "none":
+        move_from = clicked_tile
+        ret_str = "moving " + pieces.get_coord_str(rank, file) + " to ???"
+    else:
+        move_to = clicked_tile
+        move_from_rank = move_from.get("rank")
+        move_from_file = move_from.get("file")
+
+        move.new_move(move_from, move_to, get_cur_turn())
+
+        if move.get_most_recent_move_successful():
+            Board[rank][file]["piece"] = move_from.get("piece")
+            Board[move_from_rank][move_from_file]["piece"] = pieces.get_empty_piece()
+            move_to = clear_click()
+            move_from = clear_click()
+            switch_turns()
+
+        ret_str = move.get_most_recent_feedback()
+
     return ret_str

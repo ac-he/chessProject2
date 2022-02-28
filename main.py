@@ -5,11 +5,9 @@ from game import *
 
 app = Flask(__name__)
 
-cur_turn = "white"
-
+cur_turn = create_turn()
 game_board = create_board()
-
-select_message = " "
+select_message = "Welcome"
 
 
 @app.route("/", methods=["GET"])
@@ -19,10 +17,19 @@ def home():
 
 @app.route("/", methods=["POST"])
 def respond_to_click():
-    #x = request.form["x"]
-    #y = request.form["y"]
-    s = request.form["selection"]
-    select_message = "Moving piece " + s
+    global cur_turn, game_board, select_message
+    select_message = " "
+
+    for rank in range(1, 9):
+        for file in range(1, 9):
+            cur_coord = pieces.get_coord_str(rank, file)
+            r = request.form.keys().__contains__(cur_coord)
+            if r:
+
+                select_message = react_to(rank, file)
+                cur_turn = get_cur_turn()
+                game_board = get_game_board()
+                break
     return render_template("index.html", curTurn=cur_turn, board=game_board, selectedPiece=select_message)
 
 

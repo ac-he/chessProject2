@@ -12,14 +12,13 @@
 
     <div class="chessboard">
     <form action="#" method="post">
+
         {% for x in range(1, 9, 1) %}
                 {% for y in range(1, 9, 1) %}
-                    <input type="hidden" name="x" value="{{x}}"/>
-                    <input type="hidden" name="y" value="{{y}}"/>
-                    <input type="submit" class="{{board[x][y]['tile class']}}" name="selection" value="{{board[x][y]['piece']['label']}}"/>
+                    <input type="submit" class="{{board[x][y]['tile class']}}" name="{{board[x][y]['coord']}}" value="{{board[x][y]['piece']['label']}}"/>
                 {% endfor %}
         {% endfor %}
-        <input type="hidden" name="curTurn" value="{{curTurn}}"/>
+
     </form>
     </div>
 </body>

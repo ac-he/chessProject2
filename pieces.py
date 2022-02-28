@@ -1,5 +1,7 @@
+
+
 def make_tile(rank, file):
-    ret_tile = {"rank": rank, "file" : file}
+    ret_tile = {"rank": rank, "file": file, "coord": get_coord_str(rank, file)}
     if rank == 0 or rank == 9:
         if file == 0 or file == 9:
             ret_tile["tile class"] = "cornerLabel"
@@ -20,24 +22,36 @@ def make_tile(rank, file):
             ret_tile["tile class"] = decide_color_str
 
         if rank == 1:
-            ret_tile["piece"] = get_pawn('white')
-        elif rank == 2:
             ret_tile["piece"] = get_piece_starting_at_file(file, 'white')
+        elif rank == 2:
+            ret_tile["piece"] = get_pawn('white')
         elif rank == 7:
-            ret_tile["piece"] = get_piece_starting_at_file(file, 'black')
-        elif rank == 8:
             ret_tile["piece"] = get_pawn('black')
+        elif rank == 8:
+            ret_tile["piece"] = get_piece_starting_at_file(file, 'black')
         else:
             ret_tile["piece"] = get_empty_piece()
-
     return ret_tile
 
+
+def toggle_selection(tile):
+    ret_tile = tile
+    if tile["tile class"] == "white":
+        ret_tile["tile class"] = "whiteSelected"
+    elif tile.get("tile class") == "whiteSelected":
+        ret_tile["tile class"] = "white"
+    elif tile.get("tile class") == "black":
+        ret_tile["tile class"] = "blackSelected"
+    elif tile.get("tile class") == "blackSelected":
+        ret_tile["tile class"] = "black"
+    return ret_tile
 
 
 def get_rank_label_piece(file):
     if file == 0 or file == 9:
         return {"label": "x"}
-    return {"label": file}
+    file_let = file_num_to_let(file)
+    return {"label": file_let}
 
 
 def get_file_label_piece(rank):
@@ -91,3 +105,50 @@ def get_piece_starting_at_file(file, color):
     else:
         return {"label": "?"}
     return {"label": " "}
+
+
+def get_coord_str(rank, file):
+    ret_str = file_num_to_let(file) + str(rank)
+    return ret_str
+
+
+def file_let_to_num(letter):
+    num = 0
+    if letter == 'A':
+        num = 1
+    elif letter == 'B':
+        num = 2
+    elif letter == 'C':
+        num = 3
+    elif letter == 'D':
+        num = 4
+    elif letter == 'E':
+        num = 5
+    elif letter == 'F':
+        num = 6
+    elif letter == 'G':
+        num = 7
+    elif letter == 'H':
+        num = 8
+
+    return num
+
+def file_num_to_let(number):
+    let = ''
+    if number == 1:
+        let = 'A'
+    elif number == 2:
+        let = 'B'
+    elif number == 3:
+        let = 'C'
+    elif number == 4:
+        let = 'D'
+    elif number == 5:
+        let = 'E'
+    elif number == 6:
+        let = 'F'
+    elif number == 7:
+        let = 'G'
+    elif number == 8:
+        let = 'H'
+    return let
