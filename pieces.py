@@ -1,5 +1,3 @@
-
-
 def make_tile(rank, file):
     ret_tile = {"rank": rank, "file": file, "coord": get_coord_str(rank, file)}
     if rank == 0 or rank == 9:
@@ -133,6 +131,7 @@ def file_let_to_num(letter):
 
     return num
 
+
 def file_num_to_let(number):
     let = ''
     if number == 1:
@@ -152,3 +151,13 @@ def file_num_to_let(number):
     elif number == 8:
         let = 'H'
     return let
+
+
+# helper function for function react_to() in game.py
+# makes sure a color exists before we try to access it, to build the game logic
+def if_selected_piece_has_color(clicked_tile):
+    key = "piece color"
+    if key in clicked_tile.get("piece").keys():
+        return True
+    else:
+        return False
