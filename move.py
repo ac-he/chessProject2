@@ -13,10 +13,10 @@ def new_move(move_from, move_to, turn):
     clear_feedback()
     if move_to.get("piece").get("label") == "_":
         set_was_successful()
-        set_feedback("Moved " + mt_str + " to " + mf_str + ".")
+        set_feedback("Moved " + mf_str + " to " + mt_str + ".")
     else:
         set_was_unsuccessful()
-        set_feedback("cannot move to occupied space")
+        set_feedback("Cannot move to occupied space. " + mf_str + " is still selected.")
 
     return get_most_recent_move_successful()
 

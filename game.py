@@ -3,6 +3,10 @@ import pieces
 
 
 def create_board():
+    """
+
+    :return:
+    """
     board = []
     rows, cols = (10, 10)
     for i in range(rows):
@@ -33,13 +37,13 @@ def switch_turns():
 
 
 def get_game_board():
-    for r in Board:
-        for f in r:
-            print(f["coord"], end="")
-            if f["tile class"] == "whiteSelected" or f["tile class"] == "blackSelected":
-                print("s", end="")
-            print(f["piece"]["label"], end=" ")
-        print()
+    # for r in Board:
+        # for f in r:
+            # print(f["coord"], end="")
+            # if f["tile class"] == "whiteSelected" or f["tile class"] == "blackSelected":
+            #    print("s", end="")
+            # print(f["piece"]["label"], end=" ")
+        # print()
     return Board
 
 
@@ -77,12 +81,12 @@ def react_to(rank, file):
     clicked_tile = Board[rank][file]
     ret_str = ""
 
-    if move_from == clicked_tile:
+    if move_from == clicked_tile: #Same tile clicked: cleared
         move_from = clear_click()
-        ret_str = "move cleared"
-    elif move_from.get("tile class") == "none":
+        ret_str = "Move cleared."
+    elif move_from.get("tile class") == "none": #Nothing at move from
         move_from = clicked_tile
-        ret_str = "moving " + pieces.get_coord_str(rank, file) + " to ???"
+        ret_str = "Selected " + pieces.get_coord_str(rank, file) + "."
     else:
         move_to = clicked_tile
         move_from_rank = move_from.get("rank")
@@ -93,10 +97,11 @@ def react_to(rank, file):
         if move.get_most_recent_move_successful():
             Board[rank][file]["piece"] = move_from.get("piece")
             Board[move_from_rank][move_from_file]["piece"] = pieces.get_empty_piece()
-            move_to = clear_click()
+
             move_from = clear_click()
             switch_turns()
 
+        move_to = clear_click()
         ret_str = move.get_most_recent_feedback()
 
     return ret_str
