@@ -1,8 +1,9 @@
-def validate(move_from, move_to):
-    """Validates a hypothetical movement of a specified piece between specified coordinates
+def validate(move_from, move_to, board):
+    """Validates a hypothetical movement between two specified tiles
 
     :param move_from: The tile being moved from
     :param move_to: The tile being moved to
+    :param board: The board containing these tiles
     :return: True if the change in coordinates is valid for this piece, otherwise false
     """
     ret_bool = False
@@ -25,6 +26,16 @@ def validate(move_from, move_to):
 
     if name == "pawn":
         ret_bool = is_valid_pawn_movement(capturing, mf_rank, mf_file, mt_rank, mt_file)
+    elif name == "rook":
+        ret_bool = is_valid_rook_movement(board, mf_rank, mf_file, mt_rank, mt_file)
+    elif name == "knight":
+        ret_bool = is_valid_knight_movement(board, mf_rank, mf_file, mt_rank, mt_file)
+    elif name == "bishop":
+        ret_bool = is_valid_bishop_movement(board, mf_rank, mf_file, mt_rank, mt_file)
+    elif name == "king":
+        ret_bool = is_valid_king_movement(board, mf_rank, mf_file, mt_rank, mt_file)
+    elif name == "queen":
+        ret_bool = is_valid_queen_movement(board, mf_rank, mf_file, mt_rank, mt_file)
 
     return ret_bool
 
@@ -45,3 +56,31 @@ def is_valid_pawn_movement(capturing, mf_rank, mf_file, mt_rank, mt_file):
                 ret_bool = True
 
     return ret_bool
+
+
+def is_valid_rook_movement(board, mf_rank, mf_file, mt_rank, mt_file):
+    return False
+
+
+def is_valid_knight_movement(board, mf_rank, mf_file, mt_rank, mt_file):
+    return False
+
+
+def is_valid_bishop_movement(board, mf_rank, mf_file, mt_rank, mt_file):
+    dif_rank = mt_rank - mf_rank
+    dif_file = mt_file - mf_file
+    if dif_rank == 0:
+        return True
+    elif dif_file == 0:
+        return True
+    else:
+        return False
+    return False
+
+
+def is_valid_king_movement(board, mf_rank, mf_file, mt_rank, mt_file):
+    return False
+
+
+def is_valid_queen_movement(capturing, mf_rank, mf_file, mt_rank, mt_file):
+    return False
