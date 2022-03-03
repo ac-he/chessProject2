@@ -1,6 +1,5 @@
 def validate(move_from, move_to, board):
     """Validates a hypothetical movement of a specified piece between specified coordinates
-
     :param move_from: The tile being moved from
     :param move_to: The tile being moved to
     :return: True if the change in coordinates is valid for this piece, otherwise false
@@ -54,6 +53,7 @@ def is_valid_pawn_movement(capturing, mf_rank, mf_file, mt_rank, mt_file):
                 ret_bool = True
     return ret_bool
 
+
 def is_valid_rook_movement(board, mf_rank, mf_file, mt_rank, mt_file):
     dif_rank = abs(mt_rank - mf_rank)
     dif_file = abs(mt_file - mf_file)
@@ -90,12 +90,10 @@ def is_valid_knight_movement(board, mf_rank, mf_file, mt_rank, mt_file):
 def is_valid_bishop_movement(board, mf_rank, mf_file, mt_rank, mt_file):
     dif_rank = mt_rank - mf_rank
     dif_file = mt_file - mf_file
-    if dif_rank == 0:
+
+    if dif_rank == dif_file:
         return True
-    elif dif_file == 0:
-        return True
-    else:
-        return False
+
     return False
 
 
