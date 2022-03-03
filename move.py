@@ -6,6 +6,7 @@ Move = {}
 feedback = ""
 success = False
 
+
 # move_from move_to turn
 def new_move(move_from, move_to, turn, Board):
     global Move

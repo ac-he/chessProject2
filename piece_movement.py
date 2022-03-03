@@ -18,10 +18,11 @@ def validate(move_from, move_to, board):
     mt_file = move_to.get("file")
 
     # Reverse if it's advancing from the black side of the board to simplify validation
-    if move_from.get("piece").get("piece color") == "black":
-        mf_rank = 9 - mf_rank
-        mt_rank = 9 - mt_rank
+
     if name == "pawn":
+        if move_from.get("piece").get("piece color") == "black":
+            mf_rank = 9 - mf_rank
+            mt_rank = 9 - mt_rank
         ret_bool = is_valid_pawn_movement(capturing, mf_rank, mf_file, mt_rank, mt_file)
     elif name == "rook":
         ret_bool = is_valid_rook_movement(board, mf_rank, mf_file, mt_rank, mt_file)
@@ -55,14 +56,34 @@ def is_valid_pawn_movement(capturing, mf_rank, mf_file, mt_rank, mt_file):
 
 
 def is_valid_rook_movement(board, mf_rank, mf_file, mt_rank, mt_file):
-    dif_rank = abs(mt_rank - mf_rank)
-    dif_file = abs(mt_file - mf_file)
+    dif_rank = mt_rank - mf_rank
+    dif_file = mt_file - mf_file
     # verticals
     if dif_file == 0:
+
+        iterate_direction = 1
+        if dif_rank < 0:
+            iterate_direction = -1
+
+        for i in range(iterate_direction, dif_rank, iterate_direction):
+            checking = board[mf_rank + i][mf_file]
+            if checking.get("piece").get("label") != "_":
+                return False
         return True
+
     # horizontals
     if dif_rank == 0:
+
+        iterate_direction = 1
+        if dif_file < 0:
+            iterate_direction = -1
+
+        for i in range(1, dif_rank):
+            checking = board[mf_rank][mf_file + i]
+            if checking.get("piece").get("label") != "_":
+                return False
         return True
+
     return False
 
 
@@ -91,7 +112,24 @@ def is_valid_bishop_movement(board, mf_rank, mf_file, mt_rank, mt_file):
     dif_rank = mt_rank - mf_rank
     dif_file = mt_file - mf_file
 
-    if dif_rank == dif_file:
+    if abs(dif_rank) == abs(dif_file):
+        # Assume working in up/right direction
+        same_sign = True
+        iterate_direction = 1
+        if dif_rank < 0:  # if working in down direction
+            iterate_direction = -1
+            if dif_file > 0:  # if working in right direction
+                same_sign = False
+        elif dif_file < 0:  # if working in up/left direction
+            same_sign = False
+
+        for i in range(iterate_direction, dif_rank, iterate_direction):
+            if same_sign:
+                checking = board[mf_rank + i][mf_file + i]
+            else:
+                checking = board[mf_rank + i][mf_file - i]
+            if checking.get("piece").get("label") != "_":
+                return False
         return True
 
     return False
@@ -100,6 +138,7 @@ def is_valid_bishop_movement(board, mf_rank, mf_file, mt_rank, mt_file):
 def is_valid_king_movement(board, mf_rank, mf_file, mt_rank, mt_file):
     dif_rank = abs(mt_rank - mf_rank)
     dif_file = abs(mt_file - mf_file)
+
     if dif_rank == 1 and dif_file == 0:
         return True
     if dif_rank == 0 and dif_file == 1:
@@ -110,7 +149,7 @@ def is_valid_king_movement(board, mf_rank, mf_file, mt_rank, mt_file):
 
 
 def is_valid_queen_movement(board, mf_rank, mf_file, mt_rank, mt_file):
-    ret_bool = is_valid_bishop_movement()
+    ret_bool = is_valid_bishop_movement(board, mf_rank, mf_file, mt_rank, mt_file)
     if not ret_bool:
-        ret_bool = is_valid_rook_movement()
+        ret_bool = is_valid_rook_movement(board, mf_rank, mf_file, mt_rank, mt_file)
     return ret_bool
