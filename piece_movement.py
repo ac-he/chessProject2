@@ -110,4 +110,7 @@ def is_valid_king_movement(board, mf_rank, mf_file, mt_rank, mt_file):
 
 
 def is_valid_queen_movement(board, mf_rank, mf_file, mt_rank, mt_file):
-    return False
+    ret_bool = is_valid_bishop_movement()
+    if not ret_bool:
+        ret_bool = is_valid_rook_movement()
+    return ret_bool
