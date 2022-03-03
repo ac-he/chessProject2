@@ -22,7 +22,6 @@ def validate(move_from, move_to, board):
     if move_from.get("piece").get("piece color") == "black":
         mf_rank = 9 - mf_rank
         mt_rank = 9 - mt_rank
-
     if name == "pawn":
         ret_bool = is_valid_pawn_movement(capturing, mf_rank, mf_file, mt_rank, mt_file)
     elif name == "rook":
@@ -56,10 +55,35 @@ def is_valid_pawn_movement(capturing, mf_rank, mf_file, mt_rank, mt_file):
     return ret_bool
 
 def is_valid_rook_movement(board, mf_rank, mf_file, mt_rank, mt_file):
+    dif_rank = abs(mt_rank - mf_rank)
+    dif_file = abs(mt_file - mf_file)
+    # verticals
+    if dif_file == 0:
+        return True
+    # horizontals
+    if dif_rank == 0:
+        return True
     return False
 
 
 def is_valid_knight_movement(board, mf_rank, mf_file, mt_rank, mt_file):
+    # move x right by 2
+    # up or down 1
+    if mt_file == (mf_file + 2) and 1 == abs(mt_rank - mf_rank):
+        return True
+    # move x left by 2
+    # up or down 1
+    if mt_file == (mf_file - 2) and 1 == abs(mt_rank - mf_rank):
+        return True
+    # move y up 2
+    # left or right 1
+    if mt_rank == (mf_rank + 2) and 1 == abs(mt_file - mf_file):
+        return True
+    # move y down 2
+    # left or right 1
+    if mt_rank == (mf_rank - 2) and 1 == abs(mt_file - mf_file):
+        return True
+
     return False
 
 
@@ -76,8 +100,16 @@ def is_valid_bishop_movement(board, mf_rank, mf_file, mt_rank, mt_file):
 
 
 def is_valid_king_movement(board, mf_rank, mf_file, mt_rank, mt_file):
+    dif_rank = abs(mt_rank - mf_rank)
+    dif_file = abs(mt_file - mf_file)
+    if dif_rank == 1 and dif_file == 0:
+        return True
+    if dif_rank == 0 and dif_file == 1:
+        return True
+    if dif_rank == 1 and dif_file == 1:
+        return True
     return False
 
 
-def is_valid_queen_movement(capturing, mf_rank, mf_file, mt_rank, mt_file):
+def is_valid_queen_movement(board, mf_rank, mf_file, mt_rank, mt_file):
     return False
