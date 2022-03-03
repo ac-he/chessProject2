@@ -1,9 +1,13 @@
+import pieces
+import game
+from piece_movement import validate
+
 Move = {}
 feedback = ""
 success = False
 
-
-def new_move(move_from, move_to, turn):
+# move_from move_to turn
+def new_move(move_from, move_to, turn, Board):
     global Move
     Move = {"move from": move_from, "move to": move_to}
     mt_str = move_to.get("coord") + move_to.get("piece").get("label")
@@ -11,12 +15,14 @@ def new_move(move_from, move_to, turn):
 
     set_was_unsuccessful()
     clear_feedback()
-    if move_to.get("piece").get("label") == "_":
+    # move not valid
+    if not validate(move_from, move_to, Board):
+        set_was_unsuccessful()
+        set_feedback("Not a valid move!")
+    # happy case
+    else:
         set_was_successful()
         set_feedback("Moved " + mf_str + " to " + mt_str + ".")
-    else:
-        set_was_unsuccessful()
-        set_feedback("Cannot move to occupied space. " + mf_str + " is still selected.")
 
     return get_most_recent_move_successful()
 
