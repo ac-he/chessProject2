@@ -1,3 +1,16 @@
+def toggle_selection(tile):
+    ret_tile = tile
+    if tile["tile class"] == "white":
+        ret_tile["tile class"] = "whiteSelected"
+    elif tile.get("tile class") == "whiteSelected":
+        ret_tile["tile class"] = "white"
+    elif tile.get("tile class") == "black":
+        ret_tile["tile class"] = "blackSelected"
+    elif tile.get("tile class") == "blackSelected":
+        ret_tile["tile class"] = "black"
+    return ret_tile
+
+
 def make_tile(rank, file):
     ret_tile = {"rank": rank, "file": file, "coord": get_coord_str(rank, file)}
     if rank == 0 or rank == 9:
@@ -29,19 +42,6 @@ def make_tile(rank, file):
             ret_tile["piece"] = get_piece_starting_at_file(file, 'black')
         else:
             ret_tile["piece"] = get_empty_piece()
-    return ret_tile
-
-
-def toggle_selection(tile):
-    ret_tile = tile
-    if tile["tile class"] == "white":
-        ret_tile["tile class"] = "whiteSelected"
-    elif tile.get("tile class") == "whiteSelected":
-        ret_tile["tile class"] = "white"
-    elif tile.get("tile class") == "black":
-        ret_tile["tile class"] = "blackSelected"
-    elif tile.get("tile class") == "blackSelected":
-        ret_tile["tile class"] = "black"
     return ret_tile
 
 
@@ -161,3 +161,4 @@ def if_selected_piece_has_color(clicked_tile):
         return True
     else:
         return False
+

@@ -1,5 +1,6 @@
 import move
 import pieces
+from piece_movement import validate
 
 
 def create_board():
@@ -77,30 +78,32 @@ move_from = clear_click()
 
 
 def react_to(rank, file):
-    global move_to, move_from
+    global move_to, move_from, Board
     clicked_tile = Board[rank][file]
     ret_str = ""
 
     if move_from == clicked_tile: #Same tile clicked: cleared
         move_from = clear_click()
         ret_str = "Move cleared."
-    #if team tries to go when not their turn
-    elif  pieces.if_selected_piece_has_color(clicked_tile) and clicked_tile.get("piece").get("piece color") != get_cur_turn():
+    # If team tries to go when not their turn
+    elif pieces.if_selected_piece_has_color(clicked_tile) and clicked_tile.get("piece").get("piece color") != get_cur_turn() and move_from == clear_click():
         move_from = clear_click()
         ret_str = "It's not your turn!"
-    # If user tries to select an empty space to move
+    # If user tries to select an empty space
     elif clicked_tile.get("piece").get("label") == "_" and move_from == clear_click():
         move_from = clear_click()
         ret_str = "Cannot select an empty space!"
-    elif move_from.get("tile class") == "none": #Nothing at move from
+    # Select a piece!
+    elif move_from.get("tile class") == "none":
         move_from = clicked_tile
         ret_str = "Selected " + pieces.get_coord_str(rank, file) + "."
+    # Try to move!
     else:
         move_to = clicked_tile
         move_from_rank = move_from.get("rank")
         move_from_file = move_from.get("file")
 
-        move.new_move(move_from, move_to, get_cur_turn())
+        move.new_move(move_from, move_to, get_cur_turn(), Board)
 
         if move.get_most_recent_move_successful():
             Board[rank][file]["piece"] = move_from.get("piece")
@@ -108,8 +111,10 @@ def react_to(rank, file):
 
             move_from = clear_click()
             switch_turns()
-
+        else:
+            move_from = clear_click()
         move_to = clear_click()
         ret_str = move.get_most_recent_feedback()
+
 
     return ret_str
