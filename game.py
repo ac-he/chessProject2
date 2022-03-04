@@ -70,23 +70,28 @@ def get_cur_turn():
 
 
 def clear_click():
-    return {"tile class": "none", "coord": "none"}
+    return {"tile class": "none", "coord": "none", "rank": -1, "file": -1}
 
 
 move_to = clear_click()
 move_from = clear_click()
 
+selected = "background-color: #990"
+unselected = ""
+
 
 def react_to(rank, file):
-    global move_to, move_from, Board
+    global move_to, move_from, Board, selected, unselected
     clicked_tile = Board[rank][file]
     ret_str = ""
 
     if move_from == clicked_tile: #Same tile clicked: cleared
         move_from = clear_click()
         ret_str = "Move cleared."
+        Board[rank][file]["selected color"] = unselected
     # If team tries to go when not their turn
-    elif pieces.if_selected_piece_has_color(clicked_tile) and clicked_tile.get("piece").get("piece color") != get_cur_turn() and move_from == clear_click():
+    elif pieces.if_selected_piece_has_color(clicked_tile) and clicked_tile.get("piece").get("piece color") \
+            != get_cur_turn() and move_from == clear_click():
         move_from = clear_click()
         ret_str = "It's not your turn!"
         # If user tries to select an empty space
@@ -97,6 +102,7 @@ def react_to(rank, file):
     elif move_from.get("tile class") == "none":
         move_from = clicked_tile
         ret_str = "Selected " + move_from.get("piece").get("label") + " at " + pieces.get_coord_str(rank, file) + "."
+        Board[rank][file]["selected color"] = selected
     # Try to move!
     else:
         move_to = clicked_tile
@@ -114,7 +120,9 @@ def react_to(rank, file):
         else:
             move_from = clear_click()
 
+        Board[rank][file]["selected color"] = unselected
         move_to = clear_click()
         ret_str = move.get_most_recent_feedback()
 
-    return ret_str
+    return ret_str 
+

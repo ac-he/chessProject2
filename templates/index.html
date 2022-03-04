@@ -3,20 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>Chess</title>
-    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='style.css')}}"/>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename=curTurn+'_turn.css')}}"/>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='chess_style.css')}}"/>
 </head>
 <body>
     <h1>Welcome to a very cool Chess game</h1> <br/>
         <span class="currentTurnText">Current Turn:</span> <span class="curTurnTeam">{{curTurn}}</span> <br/>
-        <span class="selectedPieceText">Selected Piece: </span> <span class="selectedPiece">  {{selectedPiece}}</span>
+        <span class="selectedPiece">  {{feedbackMessage}}</span>
 
     <div class="chessboard">
     <form action="#" method="post">
 
         {% for x in range(1, 9, 1) %}
-                {% for y in range(1, 9, 1) %}
-                    <input type="submit" class="{{board[x][y]['tile class']}}" name="{{board[x][y]['coord']}}" value="{{board[x][y]['piece']['label']}}"/>
-                {% endfor %}
+            {% for y in range(1, 9, 1) %}
+                <input type="submit" class="{{board[x][y]['tile class']}}" name="{{board[x][y]['coord']}}" value="{{board[x][y]['piece']['label']}}" style="{{board[x][y]['selected class']}}"/>
+            {% endfor %}
         {% endfor %}
 
     </form>

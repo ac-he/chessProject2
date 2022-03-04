@@ -14,7 +14,7 @@ select_message = "Welcome"
 @app.route("/", methods=["GET"])
 def home():
     #validation_tests()
-    return render_template("index.html", curTurn=cur_turn, board=game_board, selectedPiece=select_message)
+    return render_template("index.html", curTurn=cur_turn, board=game_board, feedbackMessage=select_message)
 
 
 @app.route("/", methods=["POST"])
@@ -32,7 +32,7 @@ def respond_to_click():
                 game_board = get_game_board()
                 break
 
-    return render_template("index.html", curTurn=cur_turn, board=game_board, selectedPiece=select_message)
+    return render_template("index.html", curTurn=cur_turn, board=game_board, feedbackMessage=select_message)
 
 
 #def validation_tests():
