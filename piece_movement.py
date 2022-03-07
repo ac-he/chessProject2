@@ -1,3 +1,6 @@
+import pieces
+
+
 def validate(move_from, move_to, board):
     """Validates a hypothetical movement of a specified piece between specified coordinates
     :param move_from: The tile being moved from
@@ -153,3 +156,90 @@ def is_valid_queen_movement(board, mf_rank, mf_file, mt_rank, mt_file):
     if not ret_bool:
         ret_bool = is_valid_rook_movement(board, mf_rank, mf_file, mt_rank, mt_file)
     return ret_bool
+
+
+def isOnOtherTeam(spot, king_color):
+    # if the king's piece color is not the same as the spots team color
+    # then its on the opposite team
+    if king_color == spot.get("piece").get("piece color"):
+        return False
+    return True
+
+
+def canPawnKillMe(move_from, move_to, board):
+    ret_bool = False
+
+    # Get information about the given pieces
+    name = move_from.get("piece").get("name")
+    capturing = False
+    if move_to.get("piece").get("label") != "_":
+        capturing = True
+
+    mf_rank = move_from.get("rank")
+    mf_file = move_from.get("file")
+    mt_rank = move_to.get("rank")
+    mt_file = move_to.get("file")
+
+    if move_from.get("piece").get("piece color") == "black":
+        mf_rank = 9 - mf_rank
+        mt_rank = 9 - mt_rank
+    ret_bool = is_valid_pawn_movement(capturing, mf_rank, mf_file, mt_rank, mt_file)
+
+    dif_rank = mt_rank - mf_rank  # I think rank == row and file == col
+    dif_file = abs(mt_file - mf_file)
+    if dif_rank == 1 and dif_file == 1:
+        ret_bool = True
+
+    return ret_bool
+
+
+def canKillKing(board, spot, king_x, king_y, king_color):
+    # killing works a lil different for a pawn, they kill sideways not by norm move
+    # if spot is a pawn
+    if spot.get("piece").get("name") == "pawn":
+        if canPawnKillMe(spot, board[king_x][king_y], board):
+            return True
+    else:
+        # if spot curPosition is valid to move to King cur position, return True
+        if validate(spot, board[king_x][king_y], board):
+            return True
+    return False
+
+
+def am_I_putting_myself_in_check(board, mf_rank, mf_file, mt_rank, mt_file):
+    if board[mf_file][mf_rank].get("piece").get("name") != "king":
+        board[mf_rank][mf_file].get("piece").get("name")
+        return False
+    # let's assume the King moved to see if he would be in danger there
+    king_x = mt_file
+    king_y = mt_rank
+    king_color = board[mf_file][mf_rank].get("piece").get("piece color")
+    # y is 1   x is 4
+    # scan the other teams pieces to see if they could kill our King
+    for row in board:
+        for spot in row:
+            if isOnOtherTeam(spot, king_color):
+                if canKillKing(board, spot, king_x, king_y, king_color):
+                    return True
+    return False
+
+
+def am_I_putting_my_king_in_check(board, move_from, move_to):
+    # rank is x
+    # file is y
+    y = move_from.get("rank")
+    x = move_from.get("file")
+    mt_x = move_to.get("file")
+    mt_y = move_to.get("rank")
+    cur_color = move_from.get("piece").get("piece color")
+
+    if board[x][y].get("piece").get("name") == "king":
+        return False
+
+    # pretend you moved to desired location
+
+    # scan other team
+
+    # if their pieces are allowed to move to the king's location (pretend your piece moved), return true
+
+    return False

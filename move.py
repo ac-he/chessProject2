@@ -1,6 +1,6 @@
 import pieces
 import game
-from piece_movement import validate
+from piece_movement import validate, am_I_putting_myself_in_check, am_I_putting_my_king_in_check
 
 Move = {}
 feedback = ""
@@ -8,6 +8,7 @@ success = False
 
 
 # move_from move_to turn
+
 def new_move(move_from, move_to, board):
     global Move
     Move = {"move from": move_from, "move to": move_to}
@@ -27,6 +28,15 @@ def new_move(move_from, move_to, board):
         set_was_unsuccessful()
         set_feedback("Not a valid move!")
 
+    # are you moving your own king in check?
+    elif am_I_putting_myself_in_check(board, move_from.get("file"), move_from.get("rank"), move_to.get("file"), move_to.get("rank")):
+        set_was_unsuccessful()
+        set_feedback("You cannot put yourself in check!")
+
+    #are you moving a piece that would expose your king?
+    #elif am_I_putting_my_king_in_check(board, move_from, move_to):
+    #    set_was_unsuccessful()
+    #    set_feedback("You cannot put your king in check")
     # Turn works.
     else:
         set_was_successful()
