@@ -1,6 +1,5 @@
 import move
 import pieces
-from piece_movement import validate
 
 
 def create_board():
@@ -46,14 +45,6 @@ def get_game_board():
             # print(f["piece"]["label"], end=" ")
         # print()
     return Board
-
-
-def get_tile_formatted_text(tile):
-    name = str(tile.get("piece").get("label"))
-    ret_str = str(tile.get("coord"))
-    if name != "_":
-        ret_str = name + " at " + ret_str
-    return ret_str
 
 
 turn = ""
@@ -104,7 +95,7 @@ def react_to(rank, file):
     # Select a piece!
     elif move_from.get("tile class") == "none":
         move_from = clicked_tile
-        ret_str = "Selected " + move_from.get("piece").get("label") + " at " + pieces.get_coord_str(rank, file) + "."
+        ret_str = "Selected " + move.get_tile_formatted_text(move_from) + "."
         Board[rank][file]["selected class"] = selected
 
     # Try to move!

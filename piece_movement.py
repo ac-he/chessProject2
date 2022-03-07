@@ -209,6 +209,7 @@ def canKillKing(board, spot, king_x, king_y, king_color):
 def am_I_putting_myself_in_check(board, mf_rank, mf_file, mt_rank, mt_file):
     if board[mf_file][mf_rank].get("piece").get("name") != "king":
         board[mf_rank][mf_file].get("piece").get("name")
+        # print("here")
         return False
     # let's assume the King moved to see if he would be in danger there
     king_x = mt_file
@@ -221,6 +222,7 @@ def am_I_putting_myself_in_check(board, mf_rank, mf_file, mt_rank, mt_file):
             if isOnOtherTeam(spot, king_color):
                 if canKillKing(board, spot, king_x, king_y, king_color):
                     return True
+    # print("passed fforr")
     return False
 
 
@@ -229,17 +231,27 @@ def am_I_putting_my_king_in_check(board, move_from, move_to):
     # file is y
     y = move_from.get("rank")
     x = move_from.get("file")
-    mt_x = move_to.get("file")
-    mt_y = move_to.get("rank")
     cur_color = move_from.get("piece").get("piece color")
+    # print(cur_color)
 
     if board[x][y].get("piece").get("name") == "king":
         return False
 
-    # pretend you moved to desired location
+    hypothetical_board = board
+    move_to["piece"] = move_from["piece"]
+    move_to["piece"] = pieces.get_empty_piece()
 
-    # scan other team
-
-    # if their pieces are allowed to move to the king's location (pretend your piece moved), return true
-
+    # find the current king
+    for rank in range(1, 9):
+        for file in range(1, 9):
+            if hypothetical_board[rank][file]["piece"]["label"] != "_":
+                if hypothetical_board[rank][file]["piece"]["name"] == "king" and \
+                        hypothetical_board[rank][file]["piece"]["piece color"] == cur_color:
+                    king_rank = rank
+                    king_file = file
+                    # print(king_rank)
+                    # print(king_file)
+                    check = am_I_putting_myself_in_check(hypothetical_board, king_rank, king_file, king_rank, king_file)
+                    # print(check)
+                    return check
     return False

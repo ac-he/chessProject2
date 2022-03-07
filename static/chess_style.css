@@ -1,8 +1,6 @@
-
-
 .chessboard {
-    width: 640px;
-    height: 640px;
+    width: 800px;
+    height: 800px;
     margin: 20px;
     border: 25px solid #333;
     display: grid;
@@ -26,54 +24,16 @@
     text-align:center;
     display: table-cell;
     vertical-align:middle;
-
-
-
-.fileLabel{
+}
+.label {
     float: left;
     width: 80px;
     height: 80px;
-    background-color: #aab;
-    font-size:20px;
+    background-color: #333;
+    font-size:24px;
     text-align:center;
     display: table-cell;
     vertical-align:middle;
-}
-
-.rankLabel{
-    float: left;
-    width: 80px;
-    height: 80px;
-    background-color: #aab;
-    font-size:20px;
-    text-align:center;
-    display: table-cell;
-    vertical-align:middle;
-}
-.cornerLabel{
-    float: left;
-    width: 80px;
-    height: 80px;
-    background-color: #aab;
-    font-size:20px;
-    text-align:center;
-    display: table-cell;
-    vertical-align:middle;
-}
-
-.currentTurnText{
-    font-size: 2em;
-
-}
-
-.curTurnTeam{
-    font-size: 2em;
-    font-weight: bold;
-}
-
-.selectedPieceText{
-    font-size: 2em;
-}
-.selectedPiece{
-    font-size:75px;
+    font-family: "serif";
+    font-color: #666;
 }

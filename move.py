@@ -7,13 +7,19 @@ feedback = ""
 success = False
 
 
-# move_from move_to turn
+def get_tile_formatted_text(tile):
+    name = str(tile.get("piece").get("label"))
+    ret_str = str(tile.get("coord"))
+    if name != "_":
+        ret_str = name + " at " + ret_str
+    return ret_str
+
 
 def new_move(move_from, move_to, board):
     global Move
     Move = {"move from": move_from, "move to": move_to}
-    mt_str = move_to.get("coord") + move_to.get("piece").get("label")
-    mf_str = move_from.get("coord") + move_from.get("piece").get("label")
+    mt_str = get_tile_formatted_text(move_to)
+    mf_str = get_tile_formatted_text(move_from)
 
     set_was_unsuccessful()
     clear_feedback()
@@ -34,13 +40,19 @@ def new_move(move_from, move_to, board):
         set_feedback("You cannot put yourself in check!")
 
     #are you moving a piece that would expose your king?
-    #elif am_I_putting_my_king_in_check(board, move_from, move_to):
-    #    set_was_unsuccessful()
-    #    set_feedback("You cannot put your king in check")
+    elif am_I_putting_my_king_in_check(board, move_from, move_to):
+        set_was_unsuccessful()
+        set_feedback("You cannot put your king in check")
     # Turn works.
     else:
-        set_was_successful()
-        set_feedback("Moved " + mf_str + " to " + mt_str + ".")
+        set_was_successful();
+        print(move_to.get("piece").get("label"))
+        captured = move_to.get("piece").get("label") != "_"
+
+        if captured:
+            set_feedback("Captured " + mt_str + " with " + mf_str + ".")
+        else:
+            set_feedback("Moved " + mf_str + " to " + mt_str + ".")
 
     return get_most_recent_move_successful()
 
@@ -62,9 +74,9 @@ def set_was_unsuccessful():
     return success
 
 
-def set_feedback(str):
+def set_feedback(fstr):
     global feedback
-    feedback = feedback + str
+    feedback = feedback + fstr
     return feedback
 
 

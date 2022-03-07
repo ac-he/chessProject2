@@ -2,13 +2,12 @@
 def make_tile(rank, file):
     ret_tile = {"rank": rank, "file": file, "coord": get_coord_str(rank, file), "selected class": ""}
     if rank == 0 or rank == 9:
-        if file == 0 or file == 9:
-            ret_tile["tile class"] = "cornerLabel"
-        else:
-            ret_tile["tile class"] = "rankLabel"
+        ret_tile["tile class"] = "label"
+        ret_tile["selected class"] = ""
         ret_tile["piece"] = get_rank_label_piece(file)
     elif file == 0 or file == 9:
-        ret_tile["tile class"] = "fileLabel"
+        ret_tile["tile class"] = "label"
+        ret_tile["selected class"] = ""
         ret_tile["piece"] = get_file_label_piece(rank)
     else:
         decide_color = (rank + file) % 2
@@ -34,18 +33,16 @@ def make_tile(rank, file):
     return ret_tile
 
 
-
-
 def get_rank_label_piece(file):
     if file == 0 or file == 9:
-        return {"label": "x"}
+        return {"label": ""}
     file_let = file_num_to_let(file)
     return {"label": file_let}
 
 
 def get_file_label_piece(rank):
     if rank == 0 or rank == 9:
-        return {"label": "x"}
+        return {"label": ""}
     return {"label": rank}
 
 
