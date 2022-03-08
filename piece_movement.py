@@ -1,3 +1,7 @@
+import numpy
+import copy
+
+
 import pieces
 
 
@@ -158,15 +162,20 @@ def is_valid_queen_movement(board, mf_rank, mf_file, mt_rank, mt_file):
     return ret_bool
 
 
-def isOnOtherTeam(spot, king_color):
-    # if the king's piece color is not the same as the spots team color
-    # then its on the opposite team
-    if king_color == spot.get("piece").get("piece color"):
+def is_on_other_team(spot, color):
+    # If the spot is empty
+    if spot.get("piece").get("label") == "_":
         return False
+
+    # If they are the same color
+    if spot.get("piece").get("piece color") == color:
+        return False
+
+    # Otherwise return true
     return True
 
 
-def canPawnKillMe(move_from, move_to, board):
+def pawn_can_kill(move_from, move_to):
     ret_bool = False
 
     # Get information about the given pieces
@@ -193,67 +202,77 @@ def canPawnKillMe(move_from, move_to, board):
     return ret_bool
 
 
-def canKillKing(board, spot, king_x, king_y, king_color):
-    # killing works a lil different for a pawn, they kill sideways not by norm move
+def can_kill_king(board, spot, king_x, king_y):
     # if spot is a pawn
     if spot.get("piece").get("name") == "pawn":
-        if canPawnKillMe(spot, board[king_x][king_y], board):
+        # if pawn puts king in check
+        if pawn_can_kill(spot, board[king_x][king_y]):
             return True
-    else:
-        # if spot curPosition is valid to move to King cur position, return True
-        if validate(spot, board[king_x][king_y], board):
-            return True
+
+    # if this spot's piece puts king in check
+    elif validate(spot, board[king_x][king_y], board):
+        return True
+
+    # this piece does not put king in check
     return False
 
 
-def am_I_putting_myself_in_check(board, mf_rank, mf_file, mt_rank, mt_file):
-    if board[mf_file][mf_rank].get("piece").get("name") != "king":
-        board[mf_rank][mf_file].get("piece").get("name")
-        # print("here")
+def could_other_team_kill_king(board, k_rank, k_file, k_color):
+    # scan the other teams pieces to see if they could kill our King
+    for rank in range(1, 9):
+        for file in range(1, 9):
+            if is_on_other_team(board[rank][file], k_color):
+                if can_kill_king(board, board[rank][file], k_rank, k_file):
+                    return True
+    return False
+
+
+def putting_myself_in_check(board, mf_rank, mf_file, mt_rank, mt_file):
+    if not is_king(board, mf_rank, mf_file):
         return False
+
     # let's assume the King moved to see if he would be in danger there
     king_x = mt_file
     king_y = mt_rank
     king_color = board[mf_file][mf_rank].get("piece").get("piece color")
-    # y is 1   x is 4
-    # scan the other teams pieces to see if they could kill our King
-    for row in board:
-        for spot in row:
-            if isOnOtherTeam(spot, king_color):
-                if canKillKing(board, spot, king_x, king_y, king_color):
-                    return True
-    # print("passed fforr")
+
+    result = could_other_team_kill_king(board, king_x, king_y, king_color)
+    return result
+
+
+def is_king(board, rank, file):
+    if board[rank][file]["piece"]["label"] != "_":
+        if board[rank][file]["piece"]["name"] == "king":
+            return True
     return False
 
 
-def am_I_putting_my_king_in_check(board, move_from, move_to):
-    print(str(move_to))
-    # rank is x
-    # file is y
-    y = move_from.get("rank")
-    x = move_from.get("file")
-    cur_color = move_from.get("piece").get("piece color")
-    # print(cur_color)
-
-    if board[x][y].get("piece").get("name") == "king":
-        return False
-
-    hypothetical_board = board
-    move_to["piece"] = move_from["piece"]
-    move_to["piece"] = pieces.get_empty_piece()
-
-    # find the current king
+def find_king(board, color):
     for rank in range(1, 9):
         for file in range(1, 9):
-            if hypothetical_board[rank][file]["piece"]["label"] != "_":
-                if hypothetical_board[rank][file]["piece"]["name"] == "king" and \
-                        hypothetical_board[rank][file]["piece"]["piece color"] == cur_color:
-                    king_rank = rank
-                    king_file = file
-                    # print(king_rank)
-                    # print(king_file)
-                    check = am_I_putting_myself_in_check(hypothetical_board, king_rank, king_file, king_rank, king_file)
-                    # print(check)
-                    return check
-    print(str(move_to))
-    return False
+            if is_king(board, rank, file) and is_cur_color(board, rank, file, color):
+                return rank, file
+
+
+def is_cur_color(board, rank, file, color):
+    if board[rank][file]["piece"]["label"] != "_":
+        if board[rank][file]["piece"]["piece color"] == color:
+            return True
+
+
+def putting_my_king_in_check(board, mf_rank, mf_file, mt_rank, mt_file):
+    if is_king(board, mf_rank, mf_file):
+        return False
+
+    hypothetical_board = copy.deepcopy(board)
+
+    move_from = hypothetical_board[mf_rank][mf_file]
+    cur_color = move_from["piece"]["piece color"]
+
+    hypothetical_board[mt_rank][mt_file]["piece"] = move_from["piece"]
+    hypothetical_board[mf_rank][mf_file]["piece"] = {"label": "_"}
+
+    loc_king = find_king(hypothetical_board, cur_color)
+
+    result = could_other_team_kill_king(board, loc_king[0], loc_king[1], cur_color)
+    return result

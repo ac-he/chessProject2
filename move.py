@@ -1,6 +1,6 @@
 import pieces
 import game
-from piece_movement import validate, am_I_putting_myself_in_check, am_I_putting_my_king_in_check
+from piece_movement import validate, putting_myself_in_check, putting_my_king_in_check
 
 Move = {}
 feedback = ""
@@ -45,19 +45,17 @@ def new_move(move_from, move_to, board):
         set_feedback("Not a valid move!")
 
     # are you moving your own king in check?
-    elif am_I_putting_myself_in_check(board, mf_file, mf_rank, mt_file, mt_rank):
+    elif putting_myself_in_check(board, mf_rank, mf_file, mt_rank, mt_file):
         set_was_unsuccessful()
         set_feedback("You cannot put yourself in check!")
 
-    #are you moving a piece that would expose your king?
-    # elif am_I_putting_my_king_in_check(board, move_from, move_to):
-    #     set_was_unsuccessful()
-    #    set_feedback("You cannot put your king in check")
+    # are you moving a piece that would expose your king?
+    elif putting_my_king_in_check(board, mf_rank, mf_file, mt_rank, mt_file):
+        set_was_unsuccessful()
+        set_feedback("You cannot put your king in check")
     # Turn works.
     else:
         set_was_successful()
-        print("WAS SUCCESSFUL")
-        print(str(Move))
         if captured:
             set_feedback("Captured " + mt_str + " with " + mf_str + ".")
         else:
