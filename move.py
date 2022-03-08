@@ -18,9 +18,19 @@ def get_tile_formatted_text(tile):
 def new_move(move_from, move_to, board):
     global Move
     Move = {"move from": move_from, "move to": move_to}
+    print(str(Move))
     mt_str = get_tile_formatted_text(move_to)
     mf_str = get_tile_formatted_text(move_from)
 
+    captured = False
+    if move_to.get("piece").get("label") != "_":
+        captured = True
+
+    mt_rank = move_to.get("rank")
+    mt_file = move_to.get("file")
+    mf_rank = move_from.get("rank")
+
+    mf_file = move_from.get("file")
     set_was_unsuccessful()
     clear_feedback()
 
@@ -35,20 +45,19 @@ def new_move(move_from, move_to, board):
         set_feedback("Not a valid move!")
 
     # are you moving your own king in check?
-    elif am_I_putting_myself_in_check(board, move_from.get("file"), move_from.get("rank"), move_to.get("file"), move_to.get("rank")):
+    elif am_I_putting_myself_in_check(board, mf_file, mf_rank, mt_file, mt_rank):
         set_was_unsuccessful()
         set_feedback("You cannot put yourself in check!")
 
     #are you moving a piece that would expose your king?
-    elif am_I_putting_my_king_in_check(board, move_from, move_to):
-        set_was_unsuccessful()
-        set_feedback("You cannot put your king in check")
+    # elif am_I_putting_my_king_in_check(board, move_from, move_to):
+    #     set_was_unsuccessful()
+    #    set_feedback("You cannot put your king in check")
     # Turn works.
     else:
-        set_was_successful();
-        print(move_to.get("piece").get("label"))
-        captured = move_to.get("piece").get("label") != "_"
-
+        set_was_successful()
+        print("WAS SUCCESSFUL")
+        print(str(Move))
         if captured:
             set_feedback("Captured " + mt_str + " with " + mf_str + ".")
         else:

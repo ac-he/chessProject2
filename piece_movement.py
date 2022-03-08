@@ -227,6 +227,7 @@ def am_I_putting_myself_in_check(board, mf_rank, mf_file, mt_rank, mt_file):
 
 
 def am_I_putting_my_king_in_check(board, move_from, move_to):
+    print(str(move_to))
     # rank is x
     # file is y
     y = move_from.get("rank")
@@ -254,4 +255,5 @@ def am_I_putting_my_king_in_check(board, move_from, move_to):
                     check = am_I_putting_myself_in_check(hypothetical_board, king_rank, king_file, king_rank, king_file)
                     # print(check)
                     return check
+    print(str(move_to))
     return False

@@ -3,10 +3,6 @@ import pieces
 
 
 def create_board():
-    """
-
-    :return:
-    """
     board = []
     rows, cols = (10, 10)
     for i in range(rows):
@@ -48,6 +44,7 @@ def get_game_board():
 
 
 turn = ""
+is_over = False
 
 
 def create_turn():
@@ -57,11 +54,23 @@ def create_turn():
 
 
 def get_cur_turn():
+    global turn
     return turn
 
 
 def clear_click():
     return {"tile class": "none", "coord": "none", "rank": -1, "file": -1}
+
+
+def get_is_over():
+    global is_over
+    return is_over
+
+
+def set_is_over(over):
+    global is_over
+    is_over = over
+    return is_over
 
 
 move_to = clear_click()
@@ -74,6 +83,7 @@ unselected = ""
 def react_to(rank, file):
     global move_to, move_from, Board, selected, unselected
     clicked_tile = Board[rank][file]
+    clicked_tile_is_empty = clicked_tile.get("piece").get("label") == "_"
     ret_str = ""
 
     if move_from == clicked_tile:  # Same tile clicked: cleared
@@ -88,7 +98,7 @@ def react_to(rank, file):
         ret_str = "It's not your turn!"
         # If user tries to select an empty space
 
-    elif clicked_tile.get("piece").get("label") == "_" and move_from == clear_click():
+    elif clicked_tile_is_empty and move_from == clear_click():
         move_from = clear_click()
         ret_str = "Cannot select an empty space!"
 
@@ -106,7 +116,14 @@ def react_to(rank, file):
 
         move.new_move(move_from, move_to, Board)
 
-        if move.get_most_recent_move_successful():
+        can_move = move.get_most_recent_move_successful()
+        if can_move:
+            if not clicked_tile_is_empty:
+                is_king = Board[rank][file]["piece"]["name"] == "king"
+
+                if is_king:
+                    set_is_over(True)
+
             Board[rank][file]["piece"] = move_from.get("piece")
             Board[move_from_rank][move_from_file]["piece"] = pieces.get_empty_piece()
 
@@ -121,3 +138,12 @@ def react_to(rank, file):
 
     return ret_str
 
+
+def reset_game():
+    global move_to, move_from, Board
+    move_to = clear_click()
+    move_from = clear_click()
+    Board = create_board()
+    create_turn()
+    set_is_over(False)
+    return

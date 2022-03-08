@@ -8,15 +8,16 @@
 </head>
 <body>
     <h1>Welcome to a very cool Chess game</h1> <br/>
-        <span class="currentTurnText">Current Turn:</span> <span class="curTurnTeam">{{curTurn}}</span> <br/>
-        <span class="selectedPiece">  {{feedbackMessage}}</span>
+        <span class="currentTurnText">Current Turn:</span> <span class="curTurnTeam">{{curTurn}}</span><br/>
+        <span class="selectedPiece">{{feedbackMessage}}</span>
 
     <div class="chessboard">
     <form action="#" method="post">
 
         {% for x in range(0, 10, 1) %}
             {% for y in range(0, 10, 1) %}
-                <input type="submit" class="{{board[x][y]['tile class']}}" name="{{board[x][y]['coord']}}" value="{{board[x][y]['piece']['label']}}" style="{{board[x][y]['selected class']}}"/>
+                <input type="submit" class="{{board[x][y]['tile class']}}" name="{{board[x][y]['coord']}}"
+                       value="{{board[x][y]['piece']['label']}}" style="{{board[x][y]['selected class']}}"/>
             {% endfor %}
         {% endfor %}
 
