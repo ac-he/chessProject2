@@ -1,8 +1,4 @@
-import numpy
 import copy
-
-
-import pieces
 
 
 def validate(move_from, move_to, board):
@@ -223,20 +219,26 @@ def could_other_team_kill_king(board, k_rank, k_file, k_color):
         for file in range(1, 9):
             if is_on_other_team(board[rank][file], k_color):
                 if can_kill_king(board, board[rank][file], k_rank, k_file):
+                    print("can kill king from " + board[rank][file]["coord"])
                     return True
     return False
 
 
 def putting_myself_in_check(board, mf_rank, mf_file, mt_rank, mt_file):
-    if not is_king(board, mf_rank, mf_file):
-        return False
+    hypothetical_board = copy.deepcopy(board)
 
-    # let's assume the King moved to see if he would be in danger there
-    king_x = mt_file
-    king_y = mt_rank
-    king_color = board[mf_file][mf_rank].get("piece").get("piece color")
+    move_from = hypothetical_board[mf_rank][mf_file]
+    cur_color = move_from["piece"]["piece color"]
 
-    result = could_other_team_kill_king(board, king_x, king_y, king_color)
+    hypothetical_board[mt_rank][mt_file]["piece"] = move_from["piece"]
+    hypothetical_board[mf_rank][mf_file]["piece"] = {"label": "_"}
+
+    if is_king(board, mf_rank, mf_file):
+        loc_king = (mt_rank, mt_file)
+    else:
+        loc_king = find_king(hypothetical_board, cur_color)
+
+    result = could_other_team_kill_king(hypothetical_board, loc_king[0], loc_king[1], cur_color)
     return result
 
 
@@ -258,21 +260,3 @@ def is_cur_color(board, rank, file, color):
     if board[rank][file]["piece"]["label"] != "_":
         if board[rank][file]["piece"]["piece color"] == color:
             return True
-
-
-def putting_my_king_in_check(board, mf_rank, mf_file, mt_rank, mt_file):
-    if is_king(board, mf_rank, mf_file):
-        return False
-
-    hypothetical_board = copy.deepcopy(board)
-
-    move_from = hypothetical_board[mf_rank][mf_file]
-    cur_color = move_from["piece"]["piece color"]
-
-    hypothetical_board[mt_rank][mt_file]["piece"] = move_from["piece"]
-    hypothetical_board[mf_rank][mf_file]["piece"] = {"label": "_"}
-
-    loc_king = find_king(hypothetical_board, cur_color)
-
-    result = could_other_team_kill_king(board, loc_king[0], loc_king[1], cur_color)
-    return result

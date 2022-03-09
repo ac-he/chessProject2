@@ -18,7 +18,7 @@ def get_tile_formatted_text(tile):
 def new_move(move_from, move_to, board):
     global Move
     Move = {"move from": move_from, "move to": move_to}
-    print(str(Move))
+
     mt_str = get_tile_formatted_text(move_to)
     mf_str = get_tile_formatted_text(move_from)
 
@@ -44,16 +44,11 @@ def new_move(move_from, move_to, board):
         set_was_unsuccessful()
         set_feedback("Not a valid move!")
 
-    # are you moving your own king in check?
+    # are you moving such that you would immediately be in check?
     elif putting_myself_in_check(board, mf_rank, mf_file, mt_rank, mt_file):
         set_was_unsuccessful()
-        set_feedback("You cannot put yourself in check!")
+        set_feedback("This move places your king in check!")
 
-    # are you moving a piece that would expose your king?
-    elif putting_my_king_in_check(board, mf_rank, mf_file, mt_rank, mt_file):
-        set_was_unsuccessful()
-        set_feedback("You cannot put your king in check")
-    # Turn works.
     else:
         set_was_successful()
         if captured:
@@ -96,3 +91,4 @@ def clear_feedback():
 def get_most_recent_feedback():
     global feedback
     return feedback
+
