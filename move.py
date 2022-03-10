@@ -1,6 +1,6 @@
 import pieces
 import game
-from piece_movement import validate, putting_myself_in_check, putting_my_king_in_check
+from piece_movement import validate, putting_myself_in_check
 
 Move = {}
 feedback = ""
@@ -91,4 +91,3 @@ def clear_feedback():
 def get_most_recent_feedback():
     global feedback
     return feedback
-

@@ -7,6 +7,8 @@ cur_turn = create_turn()
 game_board = create_board()
 select_message = "Welcome"
 is_over = set_is_over(False)
+promoting = True, [0, 0, 0, 0]
+reset_game()
 
 
 @app.route("/", methods=["GET"])
@@ -16,7 +18,7 @@ def home():
 
 @app.route("/", methods=["POST"])
 def respond_to_click():
-    global cur_turn, game_board, select_message, is_over
+    global cur_turn, game_board, select_message, is_over, promoting
 
     if request.form.keys().__contains__("new game"):
         reset_game()
@@ -24,7 +26,16 @@ def respond_to_click():
         game_board = get_game_board()
         is_over = get_is_over()
         select_message = "New game started."
-        return render_template("index.html", curTurn=cur_turn, board=game_board, feedbackMessage=select_message)
+
+    elif promoting:
+        if request.form.keys().__contains__("rook"):
+            promote_to("rook")
+        elif request.form.keys().__contains__("knight"):
+            promote_to("knight")
+        elif request.form.keys().__contains__("bishop"):
+            promote_to("bishop")
+        elif request.form.keys().__contains__("queen"):
+            promote_to("queen")
 
     else:
         for rank in range(1, 9):
@@ -39,13 +50,14 @@ def respond_to_click():
                     cur_turn = get_cur_turn()
                     game_board = get_game_board()
                     is_over = get_is_over()
+                    promoting = get_promotion_info()
                     break
         if is_over:
             print("RECIEVED OVER")
             winner = switch_turns()
             return render_template("winner.html", winner=winner)
-        else:
-            return render_template("index.html", curTurn=cur_turn, board=game_board, feedbackMessage=select_message)
+
+    return render_template("index.html", curTurn=cur_turn, board=game_board, feedbackMessage=select_message, promoting=promoting[0], promotingInfo=promoting[1])
 
 
 if __name__ == '__main__':

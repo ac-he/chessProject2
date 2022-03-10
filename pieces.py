@@ -3,11 +3,13 @@ def make_tile(rank, file):
     ret_tile = {"rank": rank, "file": file, "coord": get_coord_str(rank, file), "selected class": ""}
     if rank == 0 or rank == 9:
         ret_tile["tile class"] = "label"
-        ret_tile["selected class"] = ""
+        ret_tile["selected class"] = "height: 40px;"
         ret_tile["piece"] = get_rank_label_piece(file)
+        if file == 0 or file == 9:
+            ret_tile["selected class"] = "height: 40px; width: 40px;"
     elif file == 0 or file == 9:
         ret_tile["tile class"] = "label"
-        ret_tile["selected class"] = ""
+        ret_tile["selected class"] = "width: 40px;"
         ret_tile["piece"] = get_file_label_piece(rank)
     else:
         decide_color = (rank + file) % 2
@@ -150,3 +152,11 @@ def if_selected_piece_has_color(clicked_tile):
     else:
         return False
 
+
+def get_promotion_options(color):
+    ret_array = ["", "", "", ""]
+    ret_array[0] = get_piece_starting_at_file(1, color)
+    ret_array[1] = get_piece_starting_at_file(2, color)
+    ret_array[2] = get_piece_starting_at_file(3, color)
+    ret_array[3] = get_piece_starting_at_file(5, color)
+    return ret_array

@@ -139,11 +139,34 @@ def react_to(rank, file):
     return ret_str
 
 
+promotion_happening = False
+
+
+def set_promotion_happening(value):
+    global promotion_happening
+    promotion_happening = value
+    return promotion_happening
+
+
+def get_promotion_info():
+    global promotion_happening
+    if promotion_happening:
+        promotion_options = pieces.get_promotion_options(get_cur_turn())
+    else:
+        promotion_options = []
+    return promotion_happening, promotion_options
+
+
+def promote_to(type):
+    return True
+
+
 def reset_game():
     global move_to, move_from, board
     move_to = clear_click()
     move_from = clear_click()
     board = create_board()
     create_turn()
+    set_promotion_happening(True)
     set_is_over(False)
     return

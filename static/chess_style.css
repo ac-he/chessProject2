@@ -1,11 +1,22 @@
+.body_white{
+  background-color: #fff;
+  color: #000
+}
+
+.body_black{
+  background-color: #000;
+  color: #fff
+}
+
 .chessboard {
-    width: 800px;
-    height: 800px;
+    width: 720px;
+    height: 720px;
     margin: 20px;
     border: 25px solid #333;
     display: grid;
+    vertical-align: middle;
 }
-.black {
+.black{
     float: left;
     width: 80px;
     height: 80px;
@@ -15,7 +26,7 @@
     display: table-cell;
     vertical-align:middle;
 }
-.white {
+.white{
     float: left;
     width: 80px;
     height: 80px;
@@ -25,7 +36,7 @@
     display: table-cell;
     vertical-align:middle;
 }
-.label {
+.label{
     float: left;
     width: 80px;
     height: 80px;
@@ -36,4 +47,28 @@
     vertical-align:middle;
     font-family: "serif";
     font-color: #666;
+}
+
+.win_button_black{
+    float: left;
+    width: 400px;
+    height: 40px;
+    background-color: #333;
+    color: #fff;
+    font-size: 28px;
+    text-align: center;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.win_button_white{
+    float: left;
+    width: 400px;
+    height: 40px;
+    background-color: #ccc;
+    color: #000;
+    font-size: 28px;
+    text-align: center;
+    display: table-cell;
+    vertical-align: middle;
 }

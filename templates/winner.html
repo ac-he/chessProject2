@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Chess</title>
-    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename=winner+'_turn.css')}}"/>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='chess_style.css')}}"/>
 </head>
-<body>
+<body class="{{'body_'+winner}}">
     <h4>Game over.</h4> <br/>
     <h1>{{winner}} is the winner!</h1> <br/>
-
     <form action="#" method="post">
-        <input type="submit" name="new game" value="Click here to start a new game." class="win_button"/>
+        <input type="submit" name="new game" value="Click here to start a new game." class="'win_button_'+winner"/>
     </form>
 </body>
 </html>
