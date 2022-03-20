@@ -1,10 +1,12 @@
 import pieces
 import game
-from piece_movement import validate, putting_myself_in_check, putting_my_king_in_check
+from piece_movement import validate, putting_myself_in_check, is_enemy_in_check, is_enemy_in_checkmate
 
 Move = {}
 feedback = ""
 success = False
+whiteInCheckmate = False
+blackInCheckmate = False
 
 
 def get_tile_formatted_text(tile):
@@ -18,6 +20,8 @@ def get_tile_formatted_text(tile):
 def new_move(move_from, move_to, board):
     global Move
     Move = {"move from": move_from, "move to": move_to}
+    print(move_from)
+    print(move_to)
 
     mt_str = get_tile_formatted_text(move_to)
     mf_str = get_tile_formatted_text(move_from)
@@ -48,7 +52,6 @@ def new_move(move_from, move_to, board):
     elif putting_myself_in_check(board, mf_rank, mf_file, mt_rank, mt_file):
         set_was_unsuccessful()
         set_feedback("This move places your king in check!")
-
     else:
         set_was_successful()
         if captured:
@@ -91,4 +94,3 @@ def clear_feedback():
 def get_most_recent_feedback():
     global feedback
     return feedback
-

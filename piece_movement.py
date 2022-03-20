@@ -1,5 +1,7 @@
 import copy
 
+from pieces import is_a_piece_tile
+
 
 def validate(move_from, move_to, board):
     """Validates a hypothetical movement of a specified piece between specified coordinates
@@ -242,6 +244,40 @@ def putting_myself_in_check(board, mf_rank, mf_file, mt_rank, mt_file):
     return result
 
 
+def are_all_my_next_moves_check(board, mf_rank, mf_file, mt_rank, mt_file):
+    cur_team = board[mf_rank][mf_file].get("piece").get("piece color")
+
+    for rank in range(1, 9):
+        for file in range(1, 9):
+            # is this my piece?
+            if is_a_piece_tile(board[rank][file]) and board[rank][file].get("piece").get("piece color") == cur_team:
+                # is there anywhere my piece can go?
+                for rank2 in range(1, 9):
+                    for file2 in range(1, 9):
+                        if putting_myself_in_check(board, rank, file, rank2, file2):
+                            return False
+    return True
+
+
+def is_enemy_in_checkmate(board, cur_color):
+    # for every piece on the board
+    for rank in range(1, 9):
+        for file in range(1, 9):
+            # make sure I own it (verify by: if curTile is a piece and if curTile is my color)
+            if is_a_piece_tile(board[rank][file].get("piece")) and board[rank][file].get("piece").get("piece color") == cur_color:
+                # is there somewhere I can go to not make me in check?
+                # scan other team for empty space or opposite team
+                for rank2 in range(1, 9):
+                    for file2 in range(1, 9):
+                        if not (is_a_piece_tile(board[rank2][file2].get("piece")) and board[rank2][file2].get("piece").get("piece color") == cur_color):
+                            # if there is a move you can make that wont put you in check,
+                            #  then you are not in checkmate -> return false
+                            if not putting_myself_in_check(board, rank, file, rank2, file2):
+                                return False
+    return True
+
+
+
 def is_king(board, rank, file):
     if board[rank][file]["piece"]["label"] != "_":
         if board[rank][file]["piece"]["name"] == "king":
@@ -260,3 +296,30 @@ def is_cur_color(board, rank, file, color):
     if board[rank][file]["piece"]["label"] != "_":
         if board[rank][file]["piece"]["piece color"] == color:
             return True
+    return False
+
+
+def is_enemy_in_check(board, mf_rank, mf_file, mt_rank, mt_file):
+    cur_color = get_opposite_color(board[mf_rank][mf_file]["piece"]["piece color"])
+    loc_king = find_king(board, cur_color)
+
+    hypothetical_board = copy.deepcopy(board)
+
+    move_from = hypothetical_board[mf_rank][mf_file]
+
+    hypothetical_board[mt_rank][mt_file]["piece"] = move_from["piece"]
+    hypothetical_board[mf_rank][mf_file]["piece"] = {"label": "_"}
+
+    if could_other_team_kill_king(hypothetical_board, loc_king[0], loc_king[1], cur_color):
+            print("enemy is in check")
+            return True
+    else:
+        return False
+
+def get_opposite_color(string):
+    return_color = " "
+    if string == "white":
+        return_color = "black"
+    elif string == "black":
+        return_color = "white"
+    return return_color

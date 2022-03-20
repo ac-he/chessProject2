@@ -1,4 +1,3 @@
-
 def make_tile(rank, file):
     ret_tile = {"rank": rank, "file": file, "coord": get_coord_str(rank, file), "selected class": ""}
     if rank == 0 or rank == 9:
@@ -150,3 +149,9 @@ def if_selected_piece_has_color(clicked_tile):
     else:
         return False
 
+
+def is_a_piece_tile(piece):
+    if piece.get('name') == "pawn" or piece.get('name') == 'rook' or piece.get('name') == 'knight' \
+            or piece.get('name') == 'bishop' or piece.get('name') == 'king' or piece.get('name') == 'queen':
+        return True
+    return False
