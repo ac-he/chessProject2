@@ -19,16 +19,13 @@
         {% endfor %}
     </form> </div>
 
-    <div class="promoting"> <form>
-        <h1> Promoting </h1>
-        {% if promoting %}
-            <h3> Here </h3>
-            {% for x in range(4) %}
-                <input type="submit" class="{{promotingInfo[x].get('piece color')}}" name="{{promotingInfo[x].get('name')}}"
-                       value="{{promotingInfo[x].get('label')}}">
-            {% endfor %}
-        {% endif %}
+    {% if can_promote %}
+    <div> <form action="#" method="post">
+        {% for x in range(0,4) %}
+            <input type="submit" class="{{promote_options[x]['piece color']}}" name="{{promote_options[x]['name']}}" value="{{promote_options[x]['label']}}"/>
+        {% endfor %}
     </form> </div>
+    {% endif %}
 
 </body>
 </html>

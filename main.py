@@ -7,7 +7,8 @@ cur_turn = create_turn()
 game_board = create_board()
 select_message = "Welcome"
 is_over = set_is_over(False)
-promoting = True, [0, 0, 0, 0]
+can_promote = False
+promote_options = []
 reset_game()
 
 
@@ -18,7 +19,7 @@ def home():
 
 @app.route("/", methods=["POST"])
 def respond_to_click():
-    global cur_turn, game_board, select_message, is_over, promoting
+    global cur_turn, game_board, select_message, is_over, can_promote, promote_options
 
     if request.form.keys().__contains__("new game"):
         reset_game()
@@ -27,15 +28,17 @@ def respond_to_click():
         is_over = get_is_over()
         select_message = "New game started."
 
-    elif promoting:
+    elif can_promote:
         if request.form.keys().__contains__("rook"):
-            promote_to("rook")
+            select_message = promote_to("rook")
         elif request.form.keys().__contains__("knight"):
-            promote_to("knight")
+            select_message = promote_to("knight")
         elif request.form.keys().__contains__("bishop"):
-            promote_to("bishop")
+            select_message = promote_to("bishop")
         elif request.form.keys().__contains__("queen"):
-            promote_to("queen")
+            select_message = promote_to("queen")
+        else:
+            select_message = "You must promote this pawn to one of the options shown below the board."
 
     else:
         for rank in range(1, 9):
@@ -47,17 +50,21 @@ def respond_to_click():
                     if not new_select_message == "":
                         select_message = new_select_message
 
-                    cur_turn = get_cur_turn()
-                    game_board = get_game_board()
                     is_over = get_is_over()
-                    promoting = get_promotion_info()
+
                     break
         if is_over:
-            print("RECIEVED OVER")
             winner = switch_turns()
             return render_template("winner.html", winner=winner)
 
-    return render_template("index.html", curTurn=cur_turn, board=game_board, feedbackMessage=select_message, promoting=promoting[0], promotingInfo=promoting[1])
+    cur_turn = get_cur_turn()
+    game_board = get_game_board()
+
+    promoting = get_promotion_info()
+    can_promote = promoting[0]
+    promote_options = promoting[1]
+
+    return render_template("index.html", curTurn=cur_turn, board=game_board, feedbackMessage=select_message, can_promote=can_promote, promote_options=promote_options)
 
 
 if __name__ == '__main__':

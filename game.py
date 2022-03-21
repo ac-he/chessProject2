@@ -1,3 +1,5 @@
+import copy
+
 import move
 import pieces
 
@@ -120,21 +122,32 @@ def react_to(rank, file):
         if can_move:
             if not clicked_tile_is_empty:
                 is_king = board[rank][file]["piece"]["name"] == "king"
-
                 if is_king:
                     set_is_over(True)
+
+            to_promotable_space = (get_cur_turn() == "black" and rank == 1) or (get_cur_turn() == "white" and rank == 8)
+
+            if move_from.get("piece").get("name") == "pawn" and to_promotable_space:
+                ret_str = " It must now be promoted."
+                set_promotion_happening(True)
 
             board[rank][file]["piece"] = move_from.get("piece")
             board[move_from_rank][move_from_file]["piece"] = pieces.get_empty_piece()
 
-            move_from = clear_click()
-            switch_turns()
+            if not promotion_happening:
+                move_from = clear_click()
+                switch_turns()
+
         else:
             move_from = clear_click()
 
         board[move_from_rank][move_from_file]["selected class"] = unselected
-        move_to = clear_click()
-        ret_str = move.get_most_recent_feedback()
+        if promotion_happening:
+            board[rank][file]["selected class"] = selected
+        else:
+            move_to = clear_click()
+
+        ret_str = move.get_most_recent_feedback() + ret_str
 
     return ret_str
 
@@ -151,14 +164,25 @@ def set_promotion_happening(value):
 def get_promotion_info():
     global promotion_happening
     if promotion_happening:
-        promotion_options = pieces.get_promotion_options(get_cur_turn())
+        promotion_options = copy.deepcopy(pieces.get_promotion_options(get_cur_turn()))
     else:
         promotion_options = []
     return promotion_happening, promotion_options
 
 
-def promote_to(type):
-    return True
+def promote_to(name):
+    global unselected, move_to, move_from
+    pieces.promote_at_tile(move_to, name)
+    ret_str = "Pawn was moved to " + move_to.get('coord') + " was promoted to " + name + "."
+
+    set_promotion_happening(False)
+
+    board[move_to["rank"]][move_to["file"]]["selected class"] = unselected
+    move_to = clear_click()
+    move_from = clear_click()
+    switch_turns()
+
+    return ret_str
 
 
 def reset_game():
@@ -167,6 +191,6 @@ def reset_game():
     move_from = clear_click()
     board = create_board()
     create_turn()
-    set_promotion_happening(True)
+    set_promotion_happening(False)
     set_is_over(False)
     return

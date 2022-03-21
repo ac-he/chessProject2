@@ -160,3 +160,16 @@ def get_promotion_options(color):
     ret_array[2] = get_piece_starting_at_file(3, color)
     ret_array[3] = get_piece_starting_at_file(5, color)
     return ret_array
+
+
+def promote_at_tile(tile, name):
+    color = tile['piece'].get('piece color')
+    if name == "rook":
+        tile["piece"] = get_piece_starting_at_file(1, color)
+    elif name == "knight":
+        tile["piece"] = get_piece_starting_at_file(2, color)
+    elif name == "bishop":
+        tile["piece"] = get_piece_starting_at_file(3, color)
+    elif name == "queen":
+        tile["piece"] = get_piece_starting_at_file(5, color)
+    return tile
