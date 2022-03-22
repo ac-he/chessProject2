@@ -83,8 +83,20 @@ selected = "background-color: #ff7"
 unselected = ""
 
 
+def unselect(tile):
+    tile["selected class"] = unselected
+    print(str(tile))
+    return tile
+
+
+def select(tile):
+    tile["selected class"] = selected
+    print(str(tile))
+    return tile
+
+
 def react_to(rank, file):
-    global move_to, move_from, board, selected, unselected
+    global move_to, move_from, board
     clicked_tile = board[rank][file]
     clicked_tile_is_empty = clicked_tile.get("piece").get("label") == "_"
     ret_str = ""
@@ -92,7 +104,7 @@ def react_to(rank, file):
     if move_from == clicked_tile:  # Same tile clicked: cleared
         move_from = clear_click()
         ret_str = "Move cleared."
-        board[rank][file]["selected class"] = unselected
+        board[rank][file] = unselect(clicked_tile)
 
     # If team tries to go when not their turn
     elif pieces.if_selected_piece_has_color(clicked_tile) and clicked_tile.get("piece").get("piece color") \
@@ -109,7 +121,7 @@ def react_to(rank, file):
     elif move_from.get("tile class") == "none":
         move_from = clicked_tile
         ret_str = "Selected " + move.get_tile_formatted_text(move_from) + "."
-        board[rank][file]["selected class"] = selected
+        board[rank][file] = select(clicked_tile)
 
     # Try to move!
     else:
@@ -135,10 +147,14 @@ def react_to(rank, file):
                 ret_str = " It must now be promoted."
                 set_promotion_happening(True)
 
+                board[move_from_rank][move_from_file] = unselect(move_from)
+                board[rank][file] = select(move_to)
+
             board[rank][file]["piece"] = move_from.get("piece")
             board[move_from_rank][move_from_file]["piece"] = pieces.get_empty_piece()
 
             if not promotion_happening:
+                board[move_from_rank][move_from_file] = unselect(move_from)
                 move_from = clear_click()
                 switch_turns()
 
@@ -147,12 +163,10 @@ def react_to(rank, file):
                 switch_turns()
 
         else:  # if move is not successful
+            board[move_from_rank][move_from_file] = unselect(move_from)
             move_from = clear_click()
-            board[move_from_rank][move_from_file]["selected class"] = unselected
 
-        if promotion_happening:
-            board[rank][file]["selected class"] = selected
-        else:
+        if not promotion_happening:
             move_to = clear_click()
 
         ret_str = move.get_most_recent_feedback() + ret_str
@@ -178,13 +192,13 @@ def get_promotion_info():
 
 
 def promote_to(name):
-    global unselected, move_to, move_from
+    global move_to, move_from
     pieces.promote_at_tile(move_to, name)
     ret_str = "Pawn was moved to " + move_to.get('coord') + " was promoted to " + name + "."
 
     set_promotion_happening(False)
 
-    board[move_to["rank"]][move_to["file"]]["selected class"] = unselected
+    board[move_to["rank"]][move_to["file"]] = unselect(move_to)
     move_to = clear_click()
     move_from = clear_click()
     switch_turns()
