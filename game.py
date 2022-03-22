@@ -2,6 +2,7 @@ import copy
 
 import move
 import pieces
+from piece_movement import is_enemy_in_checkmate
 
 
 def create_board():
@@ -92,14 +93,14 @@ def react_to(rank, file):
         move_from = clear_click()
         ret_str = "Move cleared."
         board[rank][file]["selected class"] = unselected
-    # If team tries to go when not their turn
 
+    # If team tries to go when not their turn
     elif pieces.if_selected_piece_has_color(clicked_tile) and clicked_tile.get("piece").get("piece color") \
             != get_cur_turn() and move_from == clear_click():
         move_from = clear_click()
         ret_str = "It's not your turn!"
-        # If user tries to select an empty space
 
+    # If user tries to select an empty space
     elif clicked_tile_is_empty and move_from == clear_click():
         move_from = clear_click()
         ret_str = "Cannot select an empty space!"
@@ -119,11 +120,14 @@ def react_to(rank, file):
         move.new_move(move_from, move_to, board)
 
         can_move = move.get_most_recent_move_successful()
-        if can_move:
+        if can_move:  # if move is successful
             if not clicked_tile_is_empty:
                 is_king = board[rank][file]["piece"]["name"] == "king"
                 if is_king:
                     set_is_over(True)
+            # if after a successful move, check if the other team is in checkmate
+            if is_enemy_in_checkmate(board, get_opposite_color()):
+                set_is_over(True)
 
             to_promotable_space = (get_cur_turn() == "black" and rank == 1) or (get_cur_turn() == "white" and rank == 8)
 
@@ -134,11 +138,17 @@ def react_to(rank, file):
             board[rank][file]["piece"] = move_from.get("piece")
             board[move_from_rank][move_from_file]["piece"] = pieces.get_empty_piece()
 
+<<<<<<< HEAD
             if not promotion_happening:
                 move_from = clear_click()
                 switch_turns()
 
         else:
+=======
+            move_from = clear_click()
+            switch_turns()
+        else:  # if move is not successful
+>>>>>>> main
             move_from = clear_click()
 
         board[move_from_rank][move_from_file]["selected class"] = unselected
