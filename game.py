@@ -137,8 +137,12 @@ def react_to(rank, file):
                 is_king = board[rank][file]["piece"]["name"] == "king"
                 if is_king:
                     set_is_over(True)
+
+            hypothetical_board = copy.deepcopy(board)
+            hypothetical_board[rank][file]["piece"] = move_from.get("piece")
+            hypothetical_board[move_from_rank][move_from_file]["piece"] = pieces.get_empty_piece()
             # if after a successful move, check if the other team is in checkmate
-            if is_enemy_in_checkmate(board, get_opposite_color(get_cur_turn())):
+            if is_enemy_in_checkmate(hypothetical_board, get_opposite_color(get_cur_turn())):
                 set_is_over(True)
 
             to_promotable_space = (get_cur_turn() == "black" and rank == 1) or (get_cur_turn() == "white" and rank == 8)

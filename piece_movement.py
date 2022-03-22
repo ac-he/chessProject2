@@ -260,22 +260,32 @@ def are_all_my_next_moves_check(board, mf_rank, mf_file, mt_rank, mt_file):
 
 
 def is_enemy_in_checkmate(board, cur_color):
+    print("running is enemy in checkmate")
     # for every piece on the board
     for rank in range(1, 9):
         for file in range(1, 9):
             # make sure I own it (verify by: if curTile is a piece and if curTile is my color)
             if is_a_piece_tile(board[rank][file].get("piece")) and board[rank][file].get("piece").get("piece color") == cur_color:
+                print("for every piece i own")
+                print("if i see this, then I own pieces")
+                print(board[rank][file])
                 # is there somewhere I can go to not make me in check?
-                # scan other team for empty space or opposite team
+                # scan other team for empty space or opposite team that I'm allowed to move to
                 for rank2 in range(1, 9):
                     for file2 in range(1, 9):
+                        print("for every piece that isnt mine")
                         if not (is_a_piece_tile(board[rank2][file2].get("piece")) and board[rank2][file2].get("piece").get("piece color") == cur_color):
-                            # if there is a move you can make that wont put you in check,
-                            #  then you are not in checkmate -> return false
-                            if not putting_myself_in_check(board, rank, file, rank2, file2):
-                                return False
+                            if validate(board[rank][file], board[rank2][file2], board):
+                                print("there are no blank or opposite team pieces")
+                                # if there is a move you can make that wont put you in check,
+                                #  then you are not in checkmate -> return false
+                                print("about to see if i can move anywhere and not be in check")
+                                print("checking if " + str(board[rank][file]) + " to " + str(board[rank2][file2]) + " would put me in check")
+                                if not putting_myself_in_check(board, rank, file, rank2, file2):
+                                    print("not checkmate!")
+                                    return False
+    print("checkmate!")
     return True
-
 
 
 def is_king(board, rank, file):
