@@ -1,10 +1,7 @@
 import pieces
 import game
-<<<<<<< HEAD
-from piece_movement import validate, putting_myself_in_check
-=======
 from piece_movement import validate, putting_myself_in_check, is_enemy_in_check, is_enemy_in_checkmate
->>>>>>> main
+
 
 Move = {}
 feedback = ""

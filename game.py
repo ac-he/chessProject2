@@ -126,7 +126,7 @@ def react_to(rank, file):
                 if is_king:
                     set_is_over(True)
             # if after a successful move, check if the other team is in checkmate
-            if is_enemy_in_checkmate(board, get_opposite_color()):
+            if is_enemy_in_checkmate(board, get_opposite_color(get_cur_turn())):
                 set_is_over(True)
 
             to_promotable_space = (get_cur_turn() == "black" and rank == 1) or (get_cur_turn() == "white" and rank == 8)
@@ -138,27 +138,24 @@ def react_to(rank, file):
             board[rank][file]["piece"] = move_from.get("piece")
             board[move_from_rank][move_from_file]["piece"] = pieces.get_empty_piece()
 
-<<<<<<< HEAD
             if not promotion_happening:
                 move_from = clear_click()
                 switch_turns()
 
-        else:
-=======
-            move_from = clear_click()
-            switch_turns()
-        else:  # if move is not successful
->>>>>>> main
-            move_from = clear_click()
+            else:
+                move_from = clear_click()
+                switch_turns()
 
-        board[move_from_rank][move_from_file]["selected class"] = unselected
+        else:  # if move is not successful
+            move_from = clear_click()
+            board[move_from_rank][move_from_file]["selected class"] = unselected
+
         if promotion_happening:
             board[rank][file]["selected class"] = selected
         else:
             move_to = clear_click()
 
         ret_str = move.get_most_recent_feedback() + ret_str
-
     return ret_str
 
 
