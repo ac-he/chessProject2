@@ -65,7 +65,6 @@ def is_valid_rook_movement(board, mf_rank, mf_file, mt_rank, mt_file):
     dif_file = mt_file - mf_file
     # verticals
     if dif_file == 0:
-
         iterate_direction = 1
         if dif_rank < 0:
             iterate_direction = -1
@@ -78,12 +77,11 @@ def is_valid_rook_movement(board, mf_rank, mf_file, mt_rank, mt_file):
 
     # horizontals
     if dif_rank == 0:
-
         iterate_direction = 1
         if dif_file < 0:
             iterate_direction = -1
 
-        for i in range(iterate_direction, dif_rank, iterate_direction):
+        for i in range(iterate_direction, dif_file, iterate_direction):
             checking = board[mf_rank][mf_file + i]
             if checking.get("piece").get("label") != "_":
                 return False
